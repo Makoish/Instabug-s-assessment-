@@ -30,4 +30,19 @@ class AppController < ApplicationController
 
 
   end
+
+  def getApp
+
+    appName = params[:name]
+
+    app = Application.find_by(application_name: appName)
+
+    if app
+      token = app['token']
+      render json: {token: token }, status: :ok
+    else
+      render json: {message: "application doesn't exist"}, status: :not_found
+    end
+
+  end
 end

@@ -9,13 +9,12 @@ class ChatController < ApplicationController
         appId = app&.id
 
 
-        puts appId
+        
 
         number_of_chats = Chat.where(application_id: appId).group(:application_id).count()
 
 
-        puts number_of_chats
-
+      
         chat_number = 1
         if number_of_chats.empty?
             Chat.create(chat_number: 1, application_id: appId, messages_count: 0)
