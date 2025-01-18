@@ -6,11 +6,13 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  post 'createApp', to: 'app#createApp'
-  post 'createChat', to: 'chat#createChat'
-  get 'getApp/:name', to: 'app#getApp'
-  post 'createMessage', to: 'message#createMessage'
-  get 'searchMessage', to: 'message#searchMessage'
+  post 'api/applications/createApp', to: 'app#createApp'
+  put 'api/applications/updateApp', to: 'app#updateApp'
+  get 'api/applications/getApp/:name', to: 'app#getApp'
+
+  post 'api/chats/createChat', to: 'chat#createChat'
+  post 'api/chats/createMessage', to: 'message#createMessage'
+  get 'api/chats/searchMessage', to: 'message#searchMessage'
   
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)

@@ -45,4 +45,27 @@ class AppController < ApplicationController
     end
 
   end
+
+
+  def updateApp
+
+    token = request.headers["app-token"]
+    new_app_name = JSON.parse(request.body.read)['new_app_name']
+
+    appName = JwtService.decode(token)
+
+    app = Application.find_by(application_name: appName)
+
+    if !app
+      render json: {message: "application doesn't exist"}, status: :not_found
+    else
+      app.update(application_name: new_app_name)
+      render json: {message: "application name updated"}, status: :ok
+    end
+    
+
+      
+
+
+  end
 end

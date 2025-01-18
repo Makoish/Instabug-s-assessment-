@@ -55,4 +55,37 @@ class MessageController < ApplicationController
 
 
     end
+
+
+    def searchMessage
+
+        token = request.headers["app-token"]
+        reqBody = JSON.parse(request.body.read)
+        payLoad = reqBody["payLoad"]
+        chatNumber = reqBody["chatNumber"]
+       
+        appName = JwtService.decode(token)
+
+
+        appId = Application.find_by(application_name: appName)&.id
+
+        
+        if !appId
+            return render json: { message: "Application doesn't exist"}, status: :not_found
+        end
+
+
+
+        chatId = Chat.find_by(application_id: appId, chat_number: chatNumber)&.id
+
+        if !chatId
+            return render json: { message: "Chat doesn't exist or exist in a different application"}, status: :not_found
+        end
+
+
+        
+       
+        chatId = Chat.find_by(application_id: appId, chat_number: chatNumber)&.id
+
+    end
 end
