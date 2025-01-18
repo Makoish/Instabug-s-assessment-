@@ -29,18 +29,20 @@ class MessageController < ApplicationController
         number_of_messages = Message.where(chat_id: chatId).group(:chat_id).count()
 
         
+    
 
-      
+        message_number = 1;
         if number_of_messages.empty?
-            Message.create(chat_id: chatId, message_number: 1, payload: payLoad)
+            Message.create(chat_id: chatId, message_number: message_number, payload: payLoad)
         else
-            Message.create(chat_id: chatId, message_number: number_of_messages[chatId] + 1, payload: payLoad)
+            message_number = number_of_messages[chatId] + 1
+            Message.create(chat_id: chatId, message_number: message_number, payload: payLoad)
         end
             
 
         
        
-        return render json: { message: "Message created succesfully", MessageNumber: number_of_messages[chatId] + 1 }, status: :ok
+        return render json: { message: "Message created succesfully", MessageNumber: message_number}, status: :ok
 
 
 
@@ -61,8 +63,10 @@ class MessageController < ApplicationController
 
         token = request.headers["app-token"]
         reqBody = JSON.parse(request.body.read)
-        payLoad = reqBody["payLoad"]
+        targetSearch = reqBody["targetSearch"]
         chatNumber = reqBody["chatNumber"]
+        offset = reqBody["offset"]
+        limit = reqBody["limit"]
        
         appName = JwtService.decode(token)
 
@@ -83,9 +87,25 @@ class MessageController < ApplicationController
         end
 
 
+    
         
-       
-        chatId = Chat.find_by(application_id: appId, chat_number: chatNumber)&.id
+        messages = Message.search(targetSearch, where: { chat_id: chatId}, limit: limit, offset: offset ,match: :text_middle)
+        
+        messages_array = []
+
+
+        messages.each do |message|
+            messages_array = messages_array << message.payload
+          end
+
+        result = {
+            "application_name" => appName,
+            "chat_number" => chatNumber,
+            "searchResult" => messages_array
+          }
+        
+          return render json: result, status: :ok
+        
 
     end
 end
