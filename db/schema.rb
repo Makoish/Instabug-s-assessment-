@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_17_205754) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_19_142434) do
   create_table "applications", force: :cascade do |t|
     t.string "token"
     t.string "application_name"
@@ -18,6 +18,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_17_205754) do
     t.datetime "updated_at", null: false
     t.integer "chats_count"
     t.index ["application_name"], name: "index_applications_on_application_name"
+  end
+
+  create_table "arask_jobs", force: :cascade do |t|
+    t.string "job"
+    t.datetime "execute_at"
+    t.string "interval"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["execute_at"], name: "index_arask_jobs_on_execute_at"
   end
 
   create_table "chats", force: :cascade do |t|

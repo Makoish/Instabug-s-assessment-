@@ -16,8 +16,11 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 cron && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+
+
 
 # Set production environment
 ENV RAILS_ENV="production" \
@@ -63,13 +66,15 @@ COPY --from=build /rails /rails
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+    chmod gu+rw /var/run && \
+    chmod gu+s /usr/sbin/cron && \
     chown -R rails:rails db log storage tmp
 USER 1000:1000
 
 
 
 # Entrypoint prepares the database.
-# ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 3000

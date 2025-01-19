@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   post 'api/chats/createChat', to: 'chat#createChat'
   post 'api/message/createMessage', to: 'message#createMessage'
   get 'api/message/searchMessage', to: 'message#searchMessage'
+
+  get 'api/application/getCount', to: 'app#getCount'
   
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)

@@ -19,14 +19,16 @@
 
 # Learn more: http://github.com/javan/whenever
 
-set :bundle_command, 'bundle exec'
-job_type :runner,  "cd :path && :bundle_command rails runner -e :environment ':task' :output"
-set :output, './log/cron.log'
-env :PATH, ENV['PATH']
+ENV.each { |k, v| env(k, v) }
+
+set :output, 'log/cron.log'
+set :environment, ENV['RAILS_ENV']
+job_type :runner, "cd :path && bin/rails runner -e :environment ':task' :output"
 
 every 1.minutes do
+   
    rake "db:test:prepare"
-   runner "Chat.update_chats_count"
+   runner "Chat.update_messages_count"
    runner "Application.update_chats_count"
    
 end

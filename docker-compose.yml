@@ -8,8 +8,10 @@ services:
         environment:
             - RAILS_MASTER_KEY=a7a7b9acc4a6b3e793aaee394eb13d88
             - ELASTICSEARCH_URL=http://elasticsearch_api:9200 
-        container_name: instabug_s_assessment_cont
-        image: instabug_s_assessment
+        build: .
+        depends_on: 
+            elasticsearch_api:
+                condition: service_healthy
         command: bash -c "bundle exec rails db:migrate && bundle exec rails runner 'Message.reindex' && bundle exec rails server -b 0.0.0.0"
     elasticsearch_api:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.17.27
@@ -18,3 +20,9 @@ services:
           - "9300:9300"
         environment:
           - discovery.type=single-node
+          - ingest.geoip.downloader.enabled=false
+        healthcheck:
+            test: "curl http://localhost:9200"
+            interval: 5s
+            timeout: 10s
+            retries: 10

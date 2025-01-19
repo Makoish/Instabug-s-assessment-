@@ -68,4 +68,17 @@ class AppController < ApplicationController
 
 
   end
+
+
+  def getCount
+
+    token = request.headers["app-token"]
+    appName = JwtService.decode(token)
+
+    app = Application.find_by(application_name: appName)
+
+    render json: {count: app.chats_count}, status: :ok
+
+
+  end
 end

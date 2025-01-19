@@ -7,8 +7,10 @@ if [ -z "${LD_PRELOAD+x}" ]; then
 fi
 
 
+touch ./log/cron.log
+cron
+bundle exec whenever --update-crontab
 
-./bin/rails db:prepare
 
 
 exec "${@}"
