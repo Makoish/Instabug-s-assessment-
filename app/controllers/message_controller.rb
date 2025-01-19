@@ -89,7 +89,7 @@ class MessageController < ApplicationController
 
     
         
-        messages = Message.search(targetSearch, where: { chat_id: chatId}, limit: limit, offset: offset ,match: :text_middle)
+        messages = Message.search(targetSearch, where: { chat_id: chatId}, limit: limit, offset: offset ,match: :phrase)
         
         messages_array = []
 

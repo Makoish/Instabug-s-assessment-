@@ -1,0 +1,20 @@
+
+services:
+    instabug_s_assessment:
+        stdin_open: true
+        tty: true
+        ports:
+            - 3000:3000
+        environment:
+            - RAILS_MASTER_KEY=a7a7b9acc4a6b3e793aaee394eb13d88
+            - ELASTICSEARCH_URL=http://elasticsearch_api:9200 
+        container_name: instabug_s_assessment_cont
+        image: instabug_s_assessment
+        command: bash -c "bundle exec rails db:migrate && bundle exec rails runner 'Message.reindex' && bundle exec rails server -b 0.0.0.0"
+    elasticsearch_api:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.27
+        ports:
+          - "9200:9200"
+          - "9300:9300"
+        environment:
+          - discovery.type=single-node
