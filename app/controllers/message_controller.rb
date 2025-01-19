@@ -44,17 +44,46 @@ class MessageController < ApplicationController
        
         return render json: { message: "Message created succesfully", MessageNumber: message_number}, status: :ok
 
+    end
+
+
+    def deleteMessage
 
 
         
 
-
-
+        token = request.headers["app-token"]
+        messageNumber = params[:message_number]
+        chatNumber = params[:chat_number]
+       
+        appName = JwtService.decode(token)
         
 
+        appId = Application.find_by(application_name: appName)&.id
+
+        
+        if !appId
+            return render json: { message: "Application doesn't exist"}, status: :not_found
+        end
 
 
+        chatId = Chat.find_by(application_id: appId, chat_number: chatNumber)&.id
 
+        if !chatId
+            return render json: { message: "Chat doesn't exist or exist in a different application"}, status: :not_found
+        end
+
+        message = Message.where(message_number: messageNumber, chat_id: chatId)
+        
+        if message.blank?
+            return render json: { message: "Message number is wrong"}, status: :not_found
+        else
+            message.delete_all
+            return render json: { message: "Deleted message"}, status: :ok
+        end
+
+        
+    
 
     end
 

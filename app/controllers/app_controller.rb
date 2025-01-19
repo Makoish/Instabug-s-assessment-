@@ -1,23 +1,15 @@
 class AppController < ApplicationController
   def createApp
 
-    
-    
     app_name = JSON.parse(request.body.read)['app_name']
 
-  
     existing_application = Application.find_by(application_name: app_name)
     
     if existing_application
       return render json: { message: "Application already exists" }, status: :unprocessable_entity
     end
 
-      
-    
-   
-    
     token = JwtService.encode(app_name)
-    
     
     new_app = Application.create(application_name: app_name, token: token, chats_count: 0)
     
@@ -26,8 +18,6 @@ class AppController < ApplicationController
     else
       render json: { message: "Failed to create application", errors: new_app.errors.full_messages }, status: :bad_request
     end
-    
-
 
   end
 
@@ -63,10 +53,6 @@ class AppController < ApplicationController
       render json: {message: "application name updated"}, status: :ok
     end
     
-
-      
-
-
   end
 
 
@@ -77,7 +63,7 @@ class AppController < ApplicationController
 
     app = Application.find_by(application_name: appName)
 
-    render json: {count: app.chats_count}, status: :ok
+    render json: {application_name: appName, count: app.chats_count}, status: :ok
 
 
   end
