@@ -45,6 +45,10 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
+
+#Add execute permission to the binaries folder
+RUN chmod -R guo+x ./bin
+
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
