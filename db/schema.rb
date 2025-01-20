@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_19_142434) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_19_232556) do
   create_table "applications", force: :cascade do |t|
     t.string "token"
     t.string "application_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "chats_count"
-    t.index ["application_name"], name: "index_applications_on_application_name"
+    t.index ["token"], name: "index_applications_on_token", unique: true
   end
 
   create_table "arask_jobs", force: :cascade do |t|
@@ -31,24 +31,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_142434) do
 
   create_table "chats", force: :cascade do |t|
     t.integer "chat_number"
-    t.integer "application_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "messages_count"
-    t.index ["application_id", "chat_number"], name: "index_chats_on_application_id_and_chat_number", unique: true
-    t.index ["application_id"], name: "index_chats_on_application_id"
-    t.index ["chat_number", "application_id"], name: "index_chats_on_chat_number_and_application_id"
+    t.string "token_fk", null: false
+    t.index ["token_fk", "chat_number"], name: "index_chats_on_token_fk_and_chat_number", unique: true
+    t.index ["token_fk"], name: "index_chats_on_token_fk"
   end
 
   create_table "messages", force: :cascade do |t|
     t.integer "message_number"
-    t.integer "chat_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "payload"
-    t.index ["chat_id"], name: "index_messages_on_chat_id"
+    t.string "token_fk", null: false
+    t.integer "chat_number_fk", null: false
+    t.index ["chat_number_fk"], name: "index_messages_on_chat_number"
+    t.index ["token_fk", "chat_number_fk", "message_number"], name: "index_messages_on_token_fk_chat_number_fk_and_message_number", unique: true
   end
 
-  add_foreign_key "chats", "applications"
-  add_foreign_key "messages", "chats"
+  add_foreign_key "chats", "applications", column: "token_fk", primary_key: "token"
+  add_foreign_key "messages", "applications", column: "token_fk", primary_key: "token"
+  add_foreign_key "messages", "chats", column: "chat_number_fk", on_delete: :cascade
 end

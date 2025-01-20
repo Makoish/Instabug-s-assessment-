@@ -7,16 +7,17 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   post 'api/applications/createApp', to: 'app#createApp'
-  get 'api/applications/chatCount', to: 'app#getCount'
-  put 'api/applications/updateApp', to: 'app#updateApp'
-  get 'api/applications/getApp/:name', to: 'app#getApp'
+  get 'api/applications/:token/chatCount', to: 'app#getCount' ## gets the chat count for a given app
+  put 'api/applications/:token/updateApp', to: 'app#updateApp' ## updates the name of the applicaation
 
-  post 'api/chats/createChat', to: 'chat#createChat'
-  post 'api/message/createMessage', to: 'message#createMessage'
+
+  post 'api/chats/:token/createChat', to: 'chat#createChat'
+  post 'api/message/:token/createMessage', to: 'message#createMessage'
+  
   get 'api/message/searchMessage', to: 'message#searchMessage' ## Using elastic search matching phrase, "love" would match "I love programming"
-  get 'api/applications/messageCount', to: 'message#getCount'
+  get 'api/applications/messageCount', to: 'message#getCount' ## BRB
 
-  delete 'api/messages/message/:message_number/:chat_number', to: 'message#deleteMessage'
+  delete 'api/messages/message/:token/:message_number/:chat_number', to: 'message#deleteMessage'
 
   
   
