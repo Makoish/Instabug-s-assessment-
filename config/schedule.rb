@@ -25,7 +25,7 @@ set :output, 'log/cron.log'
 set :environment, ENV['RAILS_ENV']
 job_type :runner, "cd :path && bin/rails runner -e :environment ':task' :output"
 
-every 1.minutes do
+every 1.hours do
    
    rake "db:test:prepare"
    runner "Chat.update_messages_count"
