@@ -70,10 +70,10 @@ class AppController < ApplicationController
     token = params[:token]
     app = Application.find_by(token: token)
     if !app
-      render json: {message: "application doesn't exist"}, status: :not_found
+      return render json: {message: "application doesn't exist"}, status: :not_found
     else
       chats = Chat.where(token_fk: token).as_json(only: [:chat_number, :created_at, :messages_count])
-      render json: {application_name: app.application_name, chats: chats}, status: :ok 
+      return render json: {application_name: app.application_name, chats: chats}, status: :ok 
     end
 
   end

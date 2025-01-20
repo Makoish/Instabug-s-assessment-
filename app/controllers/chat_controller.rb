@@ -3,7 +3,7 @@ class ChatController < ApplicationController
         token = params[:token]
         app = Application.find_by(token: token)
         if !app
-            render json: {message: "application doesn't exist"}, status: :not_found
+            return render json: {message: "application doesn't exist"}, status: :not_found
         else
             appId = app&.id
             ## this function is located at the chat model, it simply aggregates and count number 
@@ -22,9 +22,9 @@ class ChatController < ApplicationController
         chat = Chat.where(token_fk: token, chat_number: chat_number)
         if !chat.blank?
           chat.delete_all
-          render json: { message: "Chat deleted"}, status: :ok
+          return render json: { message: "Chat deleted"}, status: :ok
         else
-          render json: { message: "Chat doesn't exist" }, status: :not_found
+          return render json: { message: "Chat doesn't exist" }, status: :not_found
         end
     
     end
