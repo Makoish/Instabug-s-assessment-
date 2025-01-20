@@ -14,9 +14,23 @@ class ChatController < ApplicationController
             return render json: { message: "Chat created succesfully", chatNumber: chat_number }, status: :ok
 
         end
-        
-        
     end
+
+    def deleteChat
+        token = params[:token]
+        chat_number = params[:chat_number]
+        chat = Chat.where(token_fk: token, chat_number: chat_number)
+        if !chat.blank?
+          chat.delete_all
+          render json: { message: "Chat deleted"}, status: :ok
+        else
+          render json: { message: "Chat doesn't exist" }, status: :not_found
+        end
+    
+    end
+
+
+    
 
 
 end

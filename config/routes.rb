@@ -6,17 +6,23 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  post 'api/applications/createApp', to: 'app#createApp'
+  post 'api/applications', to: 'app#createApp'
+  get 'api/applications/:token', to: 'app#getAppName'
   get 'api/applications/:token/chatCount', to: 'app#getCount' ## gets the chat count for a given app
-  put 'api/applications/:token/updateApp', to: 'app#updateApp' ## updates the name of the applicaation
+  put 'api/applications/:token', to: 'app#updateApp' ## updates the name of the applicaation
+  get 'api/applications/:token/chats', to: 'app#allChat'
+  delete 'api/applications/:token', to: 'app#deleteApp'
 
 
-  post 'api/chats/:token/createChat', to: 'chat#createChat'
-  post 'api/message/:token/createMessage', to: 'message#createMessage'
+  # elastic searach is not applied here.
+  # it's applied on messages' routes
+  post 'api/chats/:token', to: 'chat#createChat'
+  delete 'api/chats/:token/:chat_number', to: 'chat#deleteChat'
   
-  get 'api/message/searchMessage', to: 'message#searchMessage' ## Using elastic search matching phrase, "love" would match "I love programming"
-  get 'api/applications/messageCount', to: 'message#getCount' ## BRB
+  
 
+  post 'api/message/:token/:chat_number', to: 'message#createMessage'
+  get 'api/message/:token/:chat_number/searchMessage', to: 'message#searchMessage' ## Using elastic search matching phrase, "love" would match "I love programming"
   delete 'api/messages/message/:token/:message_number/:chat_number', to: 'message#deleteMessage'
 
   

@@ -50,7 +50,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_232556) do
     t.index ["token_fk", "chat_number_fk", "message_number"], name: "index_messages_on_token_fk_chat_number_fk_and_message_number", unique: true
   end
 
-  add_foreign_key "chats", "applications", column: "token_fk", primary_key: "token"
-  add_foreign_key "messages", "applications", column: "token_fk", primary_key: "token"
+  add_foreign_key "chats", "applications", column: "token_fk", primary_key: "token", on_delete: :cascade
+  add_foreign_key "messages", "applications", column: "token_fk", primary_key: "token", on_delete: :cascade
   add_foreign_key "messages", "chats", column: "chat_number_fk", on_delete: :cascade
 end

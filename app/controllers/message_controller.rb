@@ -4,7 +4,7 @@ class MessageController < ApplicationController
         token = params[:token]
         reqBody = JSON.parse(request.body.read)
         payLoad = reqBody["payLoad"]
-        chatNumber = reqBody["chatNumber"]
+        chatNumber = params[:chat_number]
         appId = Application.find_by(token: token)&.id
         if !appId
             return render json: { message: "Application doesn't exist"}, status: :not_found
@@ -45,22 +45,22 @@ class MessageController < ApplicationController
 
 
     def searchMessage
-        token = request.headers["app-token"]
-        reqBody = JSON.parse(request.body.read)
-        targetSearch = reqBody["targetSearch"]
-        chatNumber = reqBody["chatNumber"]
-        offset = reqBody["offset"]
-        limit = reqBody["limit"]
-        appName = JwtService.decode(token)
-        appId = Application.find_by(application_name: appName)&.id
-        if !appId
+        token = params[:token]
+        targetSearch = params[:query]
+        chatNumber = params[:chat_number]
+        offset = params[:offset]
+        limit = params[:limit]
+        app = Application.find_by(token: token)
+        if !app
             return render json: { message: "Application doesn't exist"}, status: :not_found
         end
-        chatId = Chat.find_by(application_id: appId, chat_number: chatNumber)&.id
-        if !chatId
+
+        appName = app.application_name
+        chat = Chat.find_by(token_fk: token, chat_number: chatNumber)
+        if !chat
             return render json: { message: "Chat doesn't exist or exist in a different application"}, status: :not_found
         end
-        messages = Message.search(targetSearch, where: { chat_id: chatId}, limit: limit, offset: offset ,match: :phrase)
+        messages = Message.search(targetSearch, where: {chat_number_fk: chatNumber, token_fk: token}, limit: limit, offset: offset ,match: :phrase)
         messages_array = []
         messages.each do |message|
             messages_array = messages_array << message.payload

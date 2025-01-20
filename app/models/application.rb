@@ -1,5 +1,5 @@
 class Application < ApplicationRecord
-    has_many :chats, :foreign_key => :token_fk, :primary_key => :token, :class_name => "Chat"
+    has_many :chats, :foreign_key => :token_fk, :primary_key => :token, :class_name => "Chat", dependent: :destroy
 
     
     validates :token, presence: true, uniqueness: true
