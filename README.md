@@ -24,16 +24,25 @@ It can be found on ./config/schedule.rb
 
 
 
+**Where can we find workers you implemented (if any)?** </br>
+You can find on it ./app/sidekiq/hard_job.rb, the query is sent to the redis message queue and consumed by the sidekiq back-ground job/worker and executed
+
+
+
+
+
 **How to run the application**
 <code>sudo docker compose up</code> </br>
 running this command will create an image and run the container, note that I am not running postgres on docker it's running on the application so creating a container will create it's own database. Don't forget to stop elastic search at your linux system so it doesn't conflict with the one running on docker </br>
 <code>sudo systemctl stop elasticsearch</code> </br>
 
 **How to test the application?** </br>
-<a href="https://documenter.getpostman.com/view/20419293/2sAYQcEVny" target="_blank">
+<a href="https://documenter.getpostman.com/view/20419293/2sAYQdhpLm" target="_blank">
 </br>
     <img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/Postman_%28software%29.png?20211024200826" alt="Postman Logo" width="300" height="90">
 </a> </br>
+
+
 
 Please don't hesistate to contact me on mohamedmohsen96661@gmail if you have any issues running the project.
 
