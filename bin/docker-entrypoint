@@ -10,6 +10,7 @@ fi
 touch ./log/cron.log
 cron
 bundle exec whenever --update-crontab
+bundle exec sidekiq &
 
 
 

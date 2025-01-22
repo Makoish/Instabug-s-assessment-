@@ -8,12 +8,18 @@ services:
         environment:
             - RAILS_MASTER_KEY=a7a7b9acc4a6b3e793aaee394eb13d88
             - ELASTICSEARCH_URL=http://elasticsearch_api:9200 
+            - REDIS_URL=redis://redis:6379/0
         build: .
         depends_on: 
             elasticsearch_api:
                 condition: service_healthy
+            
+            redis:
+                condition: service_healthy
+
         command: bash -c "bundle exec rails db:migrate && bundle exec rails runner 'Message.reindex' && bundle exec rails server -b 0.0.0.0"
     elasticsearch_api:
+        attach: false
         image: docker.elastic.co/elasticsearch/elasticsearch:7.17.27
         ports:
           - "9200:9200"
@@ -26,3 +32,17 @@ services:
             interval: 5s
             timeout: 10s
             retries: 10
+
+    redis:
+        attach: false
+        image: redis:latest
+        ports:
+          - "6379:6379"
+        healthcheck:
+            test: "redis-cli ping"
+            interval: 5s
+            timeout: 10s
+            retries: 10
+        
+    
+    

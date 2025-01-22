@@ -1,7 +1,7 @@
 class AppController < ApplicationController
 
   def createApp
-
+   
     app_name = JSON.parse(request.body.read)['app_name']
     token = SecureRandom.uuid
     new_app = Application.create(application_name: app_name, token: token, chats_count: 0)

@@ -10,12 +10,18 @@ class Message < ApplicationRecord
       
       count = Message.where(chat_number_fk: chat_number).lock.maximum(:message_number)
       if count == nil
-        Message.create(message_number: 1, chat_number_fk: chat_number, payload: payload, token_fk: token)
+        message_obj = { token: token, message_number: 1, chat_number: chat_number, payload: payload}
+        message_obj = JSON.parse(message_obj.to_json)
+        puts message_obj
+        HardJob.perform_async(2, message_obj)
         return 1
       end
 
       message_number = count + 1
-      Message.create(message_number: message_number, chat_number_fk: chat_number, payload: payload, token_fk: token)
+      message_obj = { token: token, message_number: message_number, chat_number: chat_number, payload: payload}
+      message_obj = JSON.parse(message_obj.to_json)
+      puts message_obj
+      HardJob.perform_async(2, message_obj)
       return message_number
 
     end

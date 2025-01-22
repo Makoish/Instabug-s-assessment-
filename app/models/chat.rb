@@ -15,11 +15,15 @@ class Chat < ApplicationRecord
     Chat.transaction do
       count = Chat.where(token_fk: token).lock.maximum(:chat_number)
       if count == nil
-        chat = Chat.create(chat_number: 1, token_fk: token, messages_count: 0)
+        chat_obj = { token: token, chat_number: 1}
+        chat_obj = JSON.parse(chat_obj.to_json)
+        chat = HardJob.perform_async(1, chat_obj)
         return 1
       end
       chat_number = count + 1
-      chat = Chat.create(chat_number: chat_number, token_fk: token, messages_count: 0)
+      chat_obj = { token: token, chat_number: chat_number}
+      chat_obj = JSON.parse(chat_obj.to_json)
+      chat = HardJob.perform_async(1, chat_obj)
       return chat_number
     end
   end
