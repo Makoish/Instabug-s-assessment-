@@ -28,13 +28,22 @@ It can be found on ./config/schedule.rb
 You can find on it ./app/sidekiq/hard_job.rb, the query is sent to the redis message queue and consumed by the sidekiq back-ground job/worker and executed
 
 
+**Where is the race condition and how did I solve it?** </br>
+Every chat can have incremental value starting from 1, so I ran a "group by token" query on the chat table and selected the maximum chat_number for the given token and I simply added 1 to this value if it exists
+or just put the value one for this chat if the query returned nill. the race condition is because I increment the value of the maximum chat_number exists on the table and then write it back. What if someone read the last chat number while I am still incrementing it? it will simply create a value with the old chat_number + 1 which will create a conflict on my database schema since I defined that the combination of the chat_numberr and toke should be unique. I solved this by doing transaction and locking the the table on field "token" for read and write so no other request can read or write on the same token while I am performing this operation.
+
+
+
 
 
 
 **How to run the application**
 <code>sudo docker compose up</code> </br>
-running this command will create an image and run the container, note that I am not running sqlite on docker it's running on the application so creating a container will create it's own database. Don't forget to stop elastic search at your linux system so it doesn't conflict with the one running on docker </br>
+running this command will create an image and run the container, note that I am not running sqlite on docker it's running on the application so creating a container will create it's own database. Don't forget to stop elastic search and redis at your linux system so it doesn't conflict with the one running on docker </br>
 <code>sudo systemctl stop elasticsearch</code> </br>
+<code>sudo systemctl stop redis-server</code> </br>
+
+
 
 **How to test the application?** </br>
 <a href="https://documenter.getpostman.com/view/20419293/2sAYQdhpLm" target="_blank">
