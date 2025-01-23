@@ -33,7 +33,7 @@ You can find on it ./app/sidekiq/hard_job.rb, the query is sent to the redis mes
 
 **How to run the application**
 <code>sudo docker compose up</code> </br>
-running this command will create an image and run the container, note that I am not running postgres on docker it's running on the application so creating a container will create it's own database. Don't forget to stop elastic search at your linux system so it doesn't conflict with the one running on docker </br>
+running this command will create an image and run the container, note that I am not running sqlite on docker it's running on the application so creating a container will create it's own database. Don't forget to stop elastic search at your linux system so it doesn't conflict with the one running on docker </br>
 <code>sudo systemctl stop elasticsearch</code> </br>
 
 **How to test the application?** </br>
